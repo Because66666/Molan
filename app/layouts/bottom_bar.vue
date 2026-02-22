@@ -7,58 +7,6 @@ export default {
       ICP: "https://icp.gov.moe/?keyword=20246111",
       CC4: "https://creativecommons.org/licenses/by-nc/4.0/deed.zh-hans",
       NuxtLink: "https://nuxtjs.org.cn/",
-      fixed: false,
-    }
-  }
-  ,
-  mounted() {
-    this.checkFooterPosition();
-    window.addEventListener('resize', this.checkFooterPosition);
-    // Observe DOM changes that may affect document height (do NOT observe attributes on body to avoid style-change feedback loops)
-    this._observer = new MutationObserver(() => this.checkFooterPosition());
-    this._observer.observe(document.body, { childList: true, subtree: true });
-  },
-  beforeUnmount() {
-    window.removeEventListener('resize', this.checkFooterPosition);
-    if (this._observer) this._observer.disconnect();
-    // restore any body padding we set
-    document.body.style.paddingBottom = '';
-    // restore container min-height if we changed it
-    if (this.$el) this.$el.style.minHeight = '';
-    // no global layout mutations to restore
-  },
-  methods: {
-    checkFooterPosition() {
-      this.$nextTick(() => {
-        const docHeight = document.documentElement.scrollHeight;
-        const winHeight = window.innerHeight;
-        const footerEl = this.$el && this.$el.querySelector('.footer');
-        if (!footerEl) return;
-
-        const containerEl = this.$el; // .app-container
-
-        if (docHeight <= winHeight) {
-          if (!this.fixed) {
-            this.fixed = true;
-            footerEl.classList.add('is-fixed');
-            const h = footerEl.offsetHeight || 0;
-            const newPadding = h + 'px';
-            if (document.body.style.paddingBottom !== newPadding) {
-              document.body.style.paddingBottom = newPadding;
-            }
-            if (containerEl) containerEl.style.minHeight = 'auto';
-            // no global layout mutations — rely on flex layout instead
-          }
-        } else {
-          if (this.fixed) {
-            this.fixed = false;
-            footerEl.classList.remove('is-fixed');
-            if (document.body.style.paddingBottom) document.body.style.paddingBottom = '';
-            if (containerEl) containerEl.style.minHeight = '';
-            // rely on flex layout; nothing global to restore
-          }
-        }
-      });
     }
   }
 }
@@ -70,12 +18,14 @@ export default {
       <div class="footer-inner">
         <div class="footer-left">
           <p class="site-info">© 2021-{{ currentYear }} 抹岚报社</p>
-          <p class="license"><a :href="CC4" target="_blank" rel="noopener">CC BY-NC 4.0</a> | <a :href="ICP" target="_blank" rel="noopener">萌ICP备20246111号</a></p>
+          <p class="license"><a :href="CC4" target="_blank" rel="noopener">CC BY-NC 4.0</a> | <a :href="ICP"
+              target="_blank" rel="noopener">萌ICP备20246111号</a></p>
         </div>
 
         <div class="footer-right">
           <p class="theme">Theme 2026 Spring By 书黎</p>
-          <p class="powered">Powered By <a :href="NuxtLink" target="_blank" rel="noopener">Nuxt.js</a> | Lastest 2025.11.13</p>
+          <p class="powered">Powered By <a :href="NuxtLink" target="_blank" rel="noopener">Nuxt.js</a> | Lastest
+            2025.11.13</p>
         </div>
       </div>
     </footer>
@@ -166,7 +116,8 @@ export default {
     padding: 18px 12px;
   }
 
-  .footer-left, .footer-right {
+  .footer-left,
+  .footer-right {
     font-size: 14px;
   }
 }
