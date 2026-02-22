@@ -135,8 +135,7 @@
 <style>
 @font-face {
     font-family: 'ZhunSong';
-    src: url('/fonts/ZhunSong.otf') format('opentype'),
-        url('/fonts/%E5%87%86%E5%AE%8B.otf') format('opentype');
+    src: url('/fonts/ZhunSong.ttf') format('truetype');
     font-weight: 700;
     font-style: normal;
     font-display: swap;

@@ -2,5 +2,11 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  css: ['~/assets/css/fonts.css']
+  css: ['~/assets/css/fonts.css'],
+  app: {
+    head: {
+      title: '默认标题',
+      titleTemplate: '%s | 抹岚报社'
+    }
+  }
 })
