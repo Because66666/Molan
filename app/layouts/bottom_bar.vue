@@ -7,13 +7,65 @@ export default {
       ICP: "https://icp.gov.moe/?keyword=20246111",
       CC4: "https://creativecommons.org/licenses/by-nc/4.0/deed.zh-hans",
       NuxtLink: "https://nuxtjs.org.cn/",
+      fixed: false,
+    }
+  }
+  ,
+  mounted() {
+    this.checkFooterPosition();
+    window.addEventListener('resize', this.checkFooterPosition);
+    // Observe DOM changes that may affect document height (do NOT observe attributes on body to avoid style-change feedback loops)
+    this._observer = new MutationObserver(() => this.checkFooterPosition());
+    this._observer.observe(document.body, { childList: true, subtree: true });
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.checkFooterPosition);
+    if (this._observer) this._observer.disconnect();
+    // restore any body padding we set
+    document.body.style.paddingBottom = '';
+    // restore container min-height if we changed it
+    if (this.$el) this.$el.style.minHeight = '';
+    // no global layout mutations to restore
+  },
+  methods: {
+    checkFooterPosition() {
+      this.$nextTick(() => {
+        const docHeight = document.documentElement.scrollHeight;
+        const winHeight = window.innerHeight;
+        const footerEl = this.$el && this.$el.querySelector('.footer');
+        if (!footerEl) return;
+
+        const containerEl = this.$el; // .app-container
+
+        if (docHeight <= winHeight) {
+          if (!this.fixed) {
+            this.fixed = true;
+            footerEl.classList.add('is-fixed');
+            const h = footerEl.offsetHeight || 0;
+            const newPadding = h + 'px';
+            if (document.body.style.paddingBottom !== newPadding) {
+              document.body.style.paddingBottom = newPadding;
+            }
+            if (containerEl) containerEl.style.minHeight = 'auto';
+            // no global layout mutations — rely on flex layout instead
+          }
+        } else {
+          if (this.fixed) {
+            this.fixed = false;
+            footerEl.classList.remove('is-fixed');
+            if (document.body.style.paddingBottom) document.body.style.paddingBottom = '';
+            if (containerEl) containerEl.style.minHeight = '';
+            // rely on flex layout; nothing global to restore
+          }
+        }
+      });
     }
   }
 }
 </script>
 
 <template>
-  <div class="app-container">
+  <div class="app-footer-container">
     <footer class="footer" role="contentinfo">
       <div class="footer-inner">
         <div class="footer-left">
@@ -119,9 +171,15 @@ export default {
   }
 }
 
-.app-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+.app-footer-container {
+  display: block;
+}
+
+.footer.is-fixed {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
 }
 </style>

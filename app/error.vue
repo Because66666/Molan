@@ -32,12 +32,15 @@ const reload = () => window.location.reload()
 }
 
 .error-root {
-  min-height: calc(100vh - 120px);
   display: flex;
+  flex: 1 1 auto;
   align-items: center;
   justify-content: center;
   background: var(--bg);
-  padding: 32px
+  padding: 32px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 0;
 }
 
 .card {
@@ -53,15 +56,21 @@ const reload = () => window.location.reload()
 }
 
 .left {
-  flex: 1
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 8px;
 }
 
 .code {
   font-size: 96px;
-  margin: 0;
+  margin: 0 0 6px 0;
   color: var(--accent);
   font-weight: 700;
-  line-height: 1
+  line-height: 1;
 }
 
 .message {
@@ -73,7 +82,8 @@ const reload = () => window.location.reload()
 .actions {
   margin-top: 20px;
   display: flex;
-  gap: 12px
+  gap: 12px;
+  justify-content: center;
 }
 
 .btn {
@@ -95,14 +105,6 @@ const reload = () => window.location.reload()
   box-shadow: 0 8px 24px rgba(79, 70, 229, 0.12);
 }
 
-.illustration {
-  width: 220px;
-  height: 140px;
-  display: flex;
-  align-items: center;
-  justify-content: center
-}
-
 @media (max-width:720px) {
   .card {
     flex-direction: column;
@@ -113,9 +115,6 @@ const reload = () => window.location.reload()
     font-size: 64px
   }
 
-  .illustration {
-    width: 100%;
-    height: 120px
-  }
+  
 }
 </style>
