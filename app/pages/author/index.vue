@@ -3,4 +3,6 @@ useHead({
   title: '作者主页'
 })
 </script>
-<template></template>
+<template>
+  <h1>作者主页</h1>
+</template>
