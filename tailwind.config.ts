@@ -17,7 +17,7 @@ export default <Config>{
         'paper-dark': '#EDE9E0'
       },
       fontFamily: {
-        'xuansong': ['HYXuanSong', 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', 'serif'],
+        'xuansong': [ 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', 'serif'],
         'body': ['Noto Serif SC', 'Source Han Serif SC', 'Georgia', 'serif']
       },
       backgroundImage: {

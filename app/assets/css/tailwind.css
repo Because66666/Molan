@@ -14,7 +14,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'HYXuanSong', 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', serif;
+    font-family: 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', serif;
     font-weight: 600;
   }
 
@@ -41,14 +41,7 @@
   }
 }
 
-@font-face {
-  font-family: 'HYXuanSong';
-  src: url('/fonts/HYXuanSong.woff2') format('woff2'),
-       url('/fonts/HYXuanSong.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
+
 
 /* Prevent buttons and button-like links from darkening text on hover */
 @layer components {

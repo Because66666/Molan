@@ -37,6 +37,6 @@ useHead({
 
 <style>
 .prose h1, .prose h2, .prose h3, .prose h4 {
-  font-family: 'HYXuanSong', 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', serif;
+  font-family: 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', serif;
 }
 </style>
