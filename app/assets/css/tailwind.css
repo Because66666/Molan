@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Noto Serif SC', 'Source Han Serif SC', 'Georgia', serif;
+    background-color: #F9F7F2;
+    color: #1a1a1a;
+  }
+
+  body {
+    @apply bg-paper text-gray-900;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'HYXuanSong', 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', serif;
+    font-weight: 600;
+  }
+
+  a {
+    @apply text-brick hover:text-brick/80 transition-colors;
+  }
+}
+
+@layer components {
+  .btn-brick {
+    @apply bg-brick text-white px-6 py-2 rounded-sm hover:bg-brick/90 transition-colors font-medium;
+  }
+
+  .section-title {
+    @apply font-xuansong text-2xl text-brick border-b-2 border-brick pb-2 mb-6;
+  }
+
+  .card {
+    @apply bg-white rounded-sm shadow-sm p-6 hover:shadow-md transition-shadow;
+  }
+
+  .gradient-line {
+    @apply h-px bg-gradient-to-r from-transparent via-brick to-transparent;
+  }
+}
+
+@font-face {
+  font-family: 'HYXuanSong';
+  src: url('/fonts/HYXuanSong.woff2') format('woff2'),
+       url('/fonts/HYXuanSong.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}

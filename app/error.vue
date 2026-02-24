@@ -1,120 +1,42 @@
-<script setup lang="ts">
-import BottomBar from "./layouts/bottom_bar.vue"
-import TopBar from "./layouts/top_bar.vue"
-import type { NuxtError } from '#app'
-const { error } = defineProps<{ error: NuxtError }>()
-const reload = () => window.location.reload()
-</script>
-
 <template>
-  <TopBar />
-  <main class="error-root" role="main" aria-labelledby="error-title">
-    <div class="card">
-      <div class="left">
-        <h1 id="error-title" class="code">{{ error?.status ?? 500 }}</h1>
-        <p class="message">{{ error?.message ?? '抱歉，发生了意外错误。' }}</p>
-        <div class="actions">
-          <NuxtLink to="/" class="btn primary">返回主页</NuxtLink>
-            <button type="button" class="btn" @click="reload">刷新页面</button>
+  <div class="min-h-screen flex flex-col bg-paper">
+    <Header />
+    <main class="flex-1 flex items-center justify-center px-4">
+      <div class="text-center">
+        <div class="mb-8">
+          <span class="font-xuansong text-8xl md:text-9xl text-brick">
+            {{ error?.statusCode || 404 }}
+          </span>
         </div>
+        <h1 class="font-xuansong text-2xl md:text-3xl text-gray-800 mb-4">
+          版面佚失
+        </h1>
+        <p class="text-gray-500 mb-8 max-w-md mx-auto">
+          {{ error?.statusMessage || '您寻找的页面似乎已遗失在时光中' }}
+        </p>
+        <button 
+          @click="handleError"
+          class="btn-brick"
+        >
+          返回首页
+        </button>
       </div>
-    </div>
-  </main>
-  <BottomBar />
+    </main>
+    <Footer />
+  </div>
 </template>
 
-<style scoped>
-:root {
-  --bg: #f7f9fc;
-  --card: #ffffff;
-  --muted: #6b7280;
-  --accent: #4f46e5
-}
-
-.error-root {
-  display: flex;
-  flex: 1 1 auto;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg);
-  padding: 32px;
-  box-sizing: border-box;
-  width: 100%;
-  min-height: 0;
-}
-
-.card {
-  max-width: 980px;
-  width: 100%;
-  background: var(--card);
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
-  border-radius: 14px;
-  display: flex;
-  gap: 32px;
-  padding: 40px;
-  align-items: center
-}
-
-.left {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: 8px;
-}
-
-.code {
-  font-size: 96px;
-  margin: 0 0 6px 0;
-  color: var(--accent);
-  font-weight: 700;
-  line-height: 1;
-}
-
-.message {
-  margin-top: 12px;
-  color: var(--muted);
-  font-size: 18px
-}
-
-.actions {
-  margin-top: 20px;
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 16px;
-  border-radius: 10px;
-  text-decoration: none;
-  border: 1px solid rgba(79, 70, 229, 0.08);
-  color: var(--accent);
-  background: transparent;
-  font-weight: 600
-}
-
-.btn.primary {
-  background: var(--accent);
-  color: #000;
-  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.12);
-}
-
-@media (max-width:720px) {
-  .card {
-    flex-direction: column;
-    padding: 24px
+<script setup lang="ts">
+const props = defineProps<{
+  error: {
+    statusCode: number
+    statusMessage?: string
   }
+}>()
 
-  .code {
-    font-size: 64px
-  }
+const handleError = () => clearError({ redirect: '/' })
 
-  
-}
-</style>
+useHead({
+  title: `${props.error?.statusCode || '错误'} - 抹岚报社`
+})
+</script>

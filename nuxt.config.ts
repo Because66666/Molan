@@ -1,12 +1,12 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  css: ['~/assets/css/fonts.css'],
-  app: {
-    head: {
-      title: '默认标题',
-      titleTemplate: '%s | 抹岚报社'
-    }
+  modules: ['@nuxt/content', '@nuxtjs/tailwindcss'],
+  content: {
+    watch: { ws: false }
+  },
+  tailwindcss: {
+    cssPath: './app/assets/css/tailwind.css',
+    configPath: 'tailwind.config.ts'
   }
 })
