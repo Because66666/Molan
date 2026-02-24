@@ -7,7 +7,24 @@
           <span v-if="issue.date" class="text-gray-500">{{ formatDate(issue.date) }}</span>
         </div>
       </header>
+      <section class="mb-8">
+        <h2 class="font-xuansong text-xl text-gray-800 mb-4">本期封面插图</h2>
+        <ul v-if="covers.length" class="space-y-3">
+          <li
+            v-for="(c, index) in covers"
+            :key="index"
+            class="flex items-start gap-4 py-2 border-b border-gray-100"
+          >
+            <span class="text-brick/50 font-medium w-6">{{ Number(index) + 1 }}</span>
+            <div class="flex-1">
+              <span class="font-medium text-gray-800">{{ c.place }}</span>
+              <span v-if="c.author" class="text-gray-500 ml-2">/ {{ c.author }}</span>
+            </div>
+          </li>
+        </ul>
+        <p v-else class="text-gray-400">暂无封面信息</p>
 
+      </section>
       <section class="mb-8">
         <h2 class="font-xuansong text-xl text-gray-800 mb-4">本期目录</h2>
         <ul v-if="issue.toc?.length" class="space-y-3">
@@ -16,7 +33,7 @@
             :key="index"
             class="flex items-start gap-4 py-2 border-b border-gray-100"
           >
-            <span class="text-brick/50 font-medium w-6">{{ index + 1 }}</span>
+            <span class="text-brick/50 font-medium w-6">{{ Number(index) + 1 }}</span>
             <div class="flex-1">
               <span class="font-medium text-gray-800">{{ item.title }}</span>
               <span v-if="item.author" class="text-gray-500 ml-2">/ {{ item.author }}</span>
@@ -58,6 +75,7 @@
 
 <script setup lang="ts">
 import VuePdfEmbed from 'vue-pdf-embed'
+import { computed } from 'vue'
 
 const route = useRoute()
 
@@ -76,6 +94,24 @@ const formatDate = (date: string) => {
   const d = new Date(date)
   return d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
 }
+
+const covers = computed(() => {
+  const c = issue.value?.cover
+  if (!c) return []
+  if (Array.isArray(c)) {
+    const allObjects = c.every((it: any) => typeof it === 'object' && it !== null && !Array.isArray(it))
+    if (allObjects) {
+      const hasCombined = c.some((it: any) => Object.keys(it).length > 1)
+      if (hasCombined) return c
+      // merge array of single-key objects into one object
+      const merged = Object.assign({}, ...c)
+      return [merged]
+    }
+    return c
+  }
+  if (typeof c === 'object') return [c]
+  return [{ place: String(c) }]
+})
 
 useHead({
   title: `第 ${issue.value?.vol_number} 期 - 抹岚报社`

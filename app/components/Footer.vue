@@ -5,7 +5,7 @@
       <div class="flex flex-col md:flex-row justify-between items-center gap-6">
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 border border-brick/50 rounded-sm flex items-center justify-center">
-            <span class="font-xuansong text-brick/70 text-sm">方</span>
+            <span class="font-xuansong text-brick/70 text-sm">抹</span>
           </div>
           <div>
             <p class="font-xuansong text-brick">抹岚报社</p>
