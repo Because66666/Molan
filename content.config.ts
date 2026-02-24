@@ -10,6 +10,11 @@ export default defineContentConfig({
         vol_number: z.number(),
         date: z.string().optional(),
         pdf_url: z.string().optional(),
+        cover: z.array(z.object({
+          place: z.string().optional(),
+          author: z.string().optional(),
+          path: z.string().optional()
+        })).optional(),
         toc: z.array(z.object({
           title: z.string(),
           author: z.string().optional()

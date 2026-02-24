@@ -8,12 +8,18 @@
         :key="issue.id" 
         class="card group"
       >
-        <div class="aspect-[3/4] bg-paper-dark rounded-sm mb-4 flex items-center justify-center">
-          <div class="text-center">
+        <NuxtLink :to="`/issues/${issue.stem?.replace('issues/', '')}`" class="block aspect-[3/4] bg-paper-dark rounded-sm mb-4 flex items-center justify-center">
+          <img 
+            v-if="coverPath(issue)" 
+            :src="coverPath(issue)" 
+            alt="" 
+            class="w-full h-full object-cover rounded-sm"
+          />
+          <div v-else class="text-center">
             <span class="font-xuansong text-4xl text-brick/30">方圆</span>
             <p class="text-brick font-xuansong mt-2">第 {{ issue.vol_number }} 期</p>
           </div>
-        </div>
+        </NuxtLink>
         <h2 class="font-xuansong text-xl text-gray-800 group-hover:text-brick transition-colors mb-2">
           第 {{ issue.vol_number }} 期
         </h2>
@@ -67,6 +73,15 @@ const pagedIssues = computed(() => {
 
 import { formatDateYM } from '../../../composables/useFormatDate'
 const formatDate = formatDateYM
+
+const coverPath = (issue: any) => {
+  if (!issue.cover) return null
+  if (Array.isArray(issue.cover)) {
+    const pathItem = issue.cover.find((item: any) => item.path)
+    return pathItem?.path || null
+  }
+  return null
+}
 
 useHead({
   title: '电子期刊 - 抹岚报社'

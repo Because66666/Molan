@@ -13,10 +13,10 @@
           <li
             v-for="(c, index) in covers"
             :key="index"
-            class="flex items-start gap-4 py-2 border-b border-gray-100"
+            class="flex items-center gap-4 py-2 border-b border-gray-100"
           >
             <span class="text-brick/50 font-medium w-6">{{ Number(index) + 1 }}</span>
-            <div class="flex-1">
+            <div class="flex-1 flex items-center">
               <span class="font-medium text-gray-800">{{ c.place }}</span>
               <span v-if="c.author" class="text-gray-500 ml-2">/ {{ c.author }}</span>
             </div>
@@ -57,7 +57,7 @@
                 无法安全嵌入此 PDF，您可以通过“新窗口打开 PDF”链接查看。
               </div>
             </client-only>
-          </div>
+        </div>
         <a
           :href="issue.pdf_url"
           target="_blank"
@@ -96,23 +96,22 @@ if (!issue.value) {
 
 const formatDate = formatDateYMD
 
-// Replace 'cover' with the correct property name if it exists, e.g., 'covers' or 'cover_images'.
-// For demonstration, let's assume the correct property is 'covers'.
 const covers = computed(() => {
-  const c: any = (issue.value as any)?.covers // <-- use any to avoid TS errors when schema lacks `covers`
+  const c: any = (issue.value as any)?.cover
   if (!c) return []
   if (Array.isArray(c)) {
     const allObjects = c.every((it: any) => typeof it === 'object' && it !== null && !Array.isArray(it))
     if (allObjects) {
       const hasCombined = c.some((it: any) => Object.keys(it).length > 1)
       if (hasCombined) return c
-      // merge array of single-key objects into one object
       const merged = Object.assign({}, ...c)
       return [merged]
     }
     return c
   }
-  if (typeof c === 'object') return [c]
+  if (typeof c === 'object' && c !== null) {
+    return [c]
+  }
   return [{ place: String(c) }]
 })
 
@@ -120,15 +119,7 @@ useHead({
   title: `第 ${issue.value?.vol_number} 期 - 抹岚报社`
 })
 
-// Validate pdf_url before embedding
 const isPdfSafe = computed(() => isSafeUrl((issue.value as any)?.pdf_url))
-
-// Add conservative CSP for this page to restrict frames (meta tag)
-useHead({
-  meta: [
-    ({ 'http-equiv': 'Content-Security-Policy', content: "default-src 'self'; frame-src 'self' https:; object-src 'none'" } as any)
-  ]
-})
 </script>
 
 <style>

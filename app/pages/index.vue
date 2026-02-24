@@ -12,19 +12,12 @@
           <div v-if="slides?.length" class="w-full h-full">
             <div v-for="(slide, i) in slides" :key="slide.name" class="absolute inset-0 transition-opacity duration-700"
               :class="i === current ? 'opacity-100 z-10' : 'opacity-0 z-0'">
-              <template v-if="slide.link && slide.link.startsWith('/')">
-                <NuxtLink :to="slide.link" class="block w-full h-full">
-                  <img :src="slide.url" alt="" loading="lazy" class="w-full h-full object-cover" />
-                </NuxtLink>
-              </template>
-              <template v-else-if="slide.link">
-                <a :href="slide.link" target="_blank" rel="noopener noreferrer" class="block w-full h-full">
-                  <img :src="slide.url" alt="" loading="lazy" class="w-full h-full object-cover" />
-                </a>
-              </template>
-              <template v-else>
+              <component
+                :is="getLinkComponent(slide)?.component"
+                v-bind="getLinkComponent(slide)?.props"
+                class="block w-full h-full">
                 <img :src="slide.url" alt="" loading="lazy" class="w-full h-full object-cover" />
-              </template>
+              </component>
             </div>
 
             <button @click="prev"
@@ -123,6 +116,14 @@ const { data: latestIssue } = await useAsyncData('latest-issue', () =>
 )
 
 const slides = ref(carouselItems)
+
+const getLinkComponent = (slide: any) => {
+  if (!slide.link) return null
+  if (slide.link.startsWith('/')) {
+    return { component: 'NuxtLink', props: { to: slide.link } }
+  }
+  return { component: 'a', props: { href: slide.link, target: '_blank', rel: 'noopener noreferrer' } }
+}
 
 const current = ref(0)
 let timer: ReturnType<typeof setInterval> | null = null
