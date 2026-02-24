@@ -17,9 +17,6 @@
           </a>
         </div>
       </header>
-      <!-- 调试：显示 author 对象的 JSON，方便定位字段 -->
-      <pre class="mt-4 p-4 bg-gray-50 text-sm overflow-auto">{{ JSON.stringify(author, null, 2) }}</pre>
-
       <ContentRenderer :value="author" class="prose prose-stone max-w-none" />
     </article>
   </div>

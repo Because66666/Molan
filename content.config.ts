@@ -33,11 +33,8 @@ export default defineContentConfig({
         name: z.string(),
         avatar: z.string().optional(),
         bio: z.string().optional(),
-        socials: z.object({
-          email: z.string().optional(),
-          weibo: z.string().optional(),
-          github: z.string().optional()
-        }).optional()
+        position: z.string().optional(),
+        socials: z.record(z.any()).optional()
       })
     }),
     downloads: defineCollection({
