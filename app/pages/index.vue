@@ -122,7 +122,7 @@ const { data: latestIssue } = await useAsyncData('latest-issue', () =>
     .first()
 )
 
-const slides = carouselItems
+const slides = ref(carouselItems)
 
 const current = ref(0)
 let timer: ReturnType<typeof setInterval> | null = null
