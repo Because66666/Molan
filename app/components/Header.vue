@@ -38,28 +38,30 @@
         </button>
       </nav>
 
-      <Transition name="slide">
-        <div
-          v-if="mobileMenuOpen"
-          @click.self="mobileMenuOpen = false"
-          class="fixed inset-0 z-40 md:hidden"
-        >
-          <div class="absolute inset-0 bg-black/20" @click="mobileMenuOpen = false" aria-hidden="true"></div>
+      <Teleport to="body">
+        <Transition name="slide">
+          <div
+            v-if="mobileMenuOpen"
+            @click.self="mobileMenuOpen = false"
+            class="fixed inset-0 z-[9999] md:hidden"
+          >
+            <div class="absolute inset-0 bg-black/20" @click="mobileMenuOpen = false" aria-hidden="true"></div>
 
-          <ul class="relative bg-paper max-w-7xl mx-auto mt-16 p-4 border-t border-gray-200 space-y-3">
-            <li v-for="item in navItems" :key="item.path">
-              <NuxtLink 
-                :to="item.path"
-                @click="mobileMenuOpen = false"
-                class="block py-2 text-gray-700 hover:text-brick transition-colors"
-                :class="{ 'text-brick font-medium': isActive(item.path) }"
-              >
-                {{ item.label }}
-              </NuxtLink>
-            </li>
-          </ul>
-        </div>
-      </Transition>
+            <ul class="relative bg-paper max-w-7xl mx-auto mt-16 p-4 border-t border-gray-200 space-y-3">
+              <li v-for="item in navItems" :key="item.path">
+                <NuxtLink 
+                  :to="item.path"
+                  @click="mobileMenuOpen = false"
+                  class="block py-2 text-gray-700 hover:text-brick transition-colors"
+                  :class="{ 'text-brick font-medium': isActive(item.path) }"
+                >
+                  {{ item.label }}
+                </NuxtLink>
+              </li>
+            </ul>
+          </div>
+        </Transition>
+      </Teleport>
     </div>
   </header>
 </template>
