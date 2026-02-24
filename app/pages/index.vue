@@ -106,6 +106,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { carouselItems } from '../../config/carousel'
 
 const { data: newsList } = await useAsyncData('news-home', () =>
   queryCollection('news')
@@ -121,8 +122,7 @@ const { data: latestIssue } = await useAsyncData('latest-issue', () =>
     .first()
 )
 
-// fetch carousel slides from server API (reads public/pictures and optional carousel.json)
-const { data: slides } = await useAsyncData('carousel', () => $fetch('/api/carousel'))
+const slides = carouselItems
 
 const current = ref(0)
 let timer: ReturnType<typeof setInterval> | null = null

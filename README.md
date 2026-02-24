@@ -10,10 +10,10 @@ Molan 是一个基于 `Nuxt 3` 与 `@nuxt/content` 的静态/服务端混合内�
 主要特性
 --------
 
-- 基于 Nuxt 3 的现代前端框架
-- 使用 `@nuxt/content` 或文件系统管理 Markdown 内容（`/content`）
+- 基于 Nuxt 4 的现代前端框架
+- 使用 `@nuxt/content` 管理 Markdown 内容（`/content`）
 - Tailwind CSS 快速构建样式（`tailwind.config.ts`）
-- 简单的服务器 API 示例：`/server/api/carousel.get.ts`
+- 完全支持静态导出，可部署到静态托管服务
 - 已组织好的页面路由：作者、期刊、新闻、下载等
 
 仓库结构（关键文件）
@@ -25,7 +25,7 @@ Molan 是一个基于 `Nuxt 3` 与 `@nuxt/content` 的静态/服务端混合内�
 	- [app/components/](app/components/) — 头部/页脚等组件
 	- [app/pages/](app/pages/) — 页面路由（authors, issues, news, downloads）
 - [content/](content/) — Markdown 内容（authors, issues, news, downloads）
-- [server/api/carousel.get.ts](server/api/carousel.get.ts) — 简单的 API 示例
+- [config/](config/) — 静态配置文件（轮播图等）
 - [public/](public/) — 静态资源（图片、PDF 等）
 
 快速开始
@@ -43,12 +43,20 @@ npm install
 npm run dev
 ```
 
-构建用于生产环境：
+构建用于生产环境（SSR 模式）：
 
 ```bash
 npm run build
 npm run preview
 ```
+
+静态导出（用于静态托管服务）：
+
+```bash
+npm run generate
+```
+
+静态导出后，构建产物位于 `.output/public/` 目录，可直接部署到 GitHub Pages、Netlify、Vercel 等静态托管服务。
 
 内容与编辑
 ----------
@@ -60,18 +68,34 @@ npm run preview
 --------
 
 - 组件位于 [app/components/](app/components/)，页面位于 [app/pages/](app/pages/)。
-- 若要添加新的 API 路由，参照 [server/api/carousel.get.ts](server/api/carousel.get.ts) 的写法。
+- 轮播图配置位于 [config/carousel.ts](config/carousel.ts)，添加新图片需同时更新配置文件和 `public/pictures/` 目录。
 - 使用 Tailwind 类快速构建响应式样式，样式入口为 [app/assets/css/tailwind.css](app/assets/css/tailwind.css)。
 
 部署
 ----
 
-这是一个标准的 Node.js 静态/服务器混合应用。常见流程：
+本项目支持两种部署方式：
+
+### 静态部署（推荐）
+
+```bash
+npm run generate
+```
+
+将 `.output/public/` 目录部署到静态托管服务：
+- GitHub Pages
+- Netlify
+- Vercel
+- Cloudflare Pages
+- 等任何支持静态文件托管的服务
+
+### SSR 部署
 
 ```bash
 npm run build
-# 将构建产物部署到支持 Node 的主机或使用静态导出（按需配置）
 ```
+
+将构建产物部署到支持 Node.js 的主机或 Serverless 平台。
 
 贡献
 ----

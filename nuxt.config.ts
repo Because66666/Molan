@@ -8,5 +8,11 @@ export default defineNuxtConfig({
   tailwindcss: {
     cssPath: './app/assets/css/tailwind.css',
     configPath: 'tailwind.config.ts'
+  },
+  nitro: {
+    prerender: {
+      crawlLinks: true,
+      failOnError: false
+    }
   }
 })
