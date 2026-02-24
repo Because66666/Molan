@@ -14,10 +14,10 @@
         </div>
 
         <div class="text-center md:text-right text-sm text-gray-600 space-y-1">
-          <p>&copy; {{ currentYear }} 抹岚报社 版权所有</p>
+          <p>&copy; 2021-{{ currentYear }} 抹岚报社</p>
           <p class="text-xs">
-            <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" class="hover:text-brick">
-              京ICP备XXXXXXXX号
+            <a href="https://icp.gov.moe/?keyword=20246111" target="_blank" rel="noopener" class="hover:text-brick">
+              萌ICP备20246111号
             </a>
           </p>
           <p class="text-xs">

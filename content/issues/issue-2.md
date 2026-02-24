@@ -1,5 +1,5 @@
 ---
-title: 第2期
+title: 456
 vol_number: 2
 date: 2026-02-15
 pdf_url: https://raw.githubusercontent.com/example/molan/main/pdfs/issue-2.pdf

@@ -29,21 +29,12 @@
       <section v-if="issue.pdf_url">
         <h2 class="font-xuansong text-xl text-gray-800 mb-4">PDF 阅读</h2>
         <div class="bg-white rounded-sm border border-gray-200 p-4">
-          <div v-if="pdfLoading" class="text-center py-12 text-gray-500">
-            <div class="inline-block animate-spin mr-2">
-              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-            </div>
-            正在调取资源...
-          </div>
-          <iframe
-            v-show="!pdfLoading"
-            :src="issue.pdf_url"
-            class="w-full h-[800px] rounded-sm"
-            @load="pdfLoading = false"
-          />
+          <client-only>
+            <vue-pdf-embed
+              v-if="issue.pdf_url"
+              :url="issue.pdf_url">
+            </vue-pdf-embed>
+          </client-only>
         </div>
         <a 
           :href="issue.pdf_url" 
@@ -63,8 +54,9 @@
 </template>
 
 <script setup lang="ts">
+import VuePdfEmbed from 'vue-pdf-embed'
+
 const route = useRoute()
-const pdfLoading = ref(true)
 
 const { data: issue } = await useAsyncData(`issue-${route.params.slug}`, () =>
   queryCollection('issues')
@@ -86,3 +78,19 @@ useHead({
   title: `第 ${issue.value?.vol_number} 期 - 抹岚报社`
 })
 </script>
+
+<style>
+.pdf-container {
+  position: relative;
+  width: 100%;
+  height: 800px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.pdf-container iframe {
+  border: none;
+  width: 100%;
+  height: 100%;
+}
+</style>

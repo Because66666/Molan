@@ -1,8 +1,8 @@
 ---
-title: 第1期
+title: 2024
 vol_number: 1
 date: 2026-01-15
-pdf_url: https://raw.githubusercontent.com/example/molan/main/pdfs/issue-1.pdf
+pdf_url: https://raw.githubusercontent.com/30266-Official/Molan_Assets/main/2025.9.pdf
 toc:
   - title: 发刊词
     author: 编辑部
