@@ -95,8 +95,10 @@ const formatDate = (date: string) => {
   return d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
 }
 
+// Replace 'cover' with the correct property name if it exists, e.g., 'covers' or 'cover_images'.
+// For demonstration, let's assume the correct property is 'covers'.
 const covers = computed(() => {
-  const c = issue.value?.cover
+  const c = issue.value?.covers // <-- update this line to match your actual data property
   if (!c) return []
   if (Array.isArray(c)) {
     const allObjects = c.every((it: any) => typeof it === 'object' && it !== null && !Array.isArray(it))

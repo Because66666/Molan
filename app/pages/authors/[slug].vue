@@ -11,9 +11,12 @@
         <h1 class="font-xuansong text-3xl text-gray-800 mb-2">{{ author.name }}</h1>
         <p v-if="author.bio" class="text-gray-500">{{ author.bio }}</p>
         <p v-if="author.position" class="text-gray-500">{{ author.position }}</p>
-        <div v-if="author.socials" class="flex justify-center gap-4 mt-4">
+        <div v-if="author.socials" class="flex flex-col justify-center items-center gap-2 mt-4">
           <a v-if="author.socials.QQ" class="text-gray-400 hover:text-brick transition-colors">
             QQ：{{ author.socials.QQ }}
+          </a>
+          <a v-if="author.socials.Blog" class="text-gray-400 hover:text-brick transition-colors">
+            个人博客：<NuxtLink :to="author.socials.Blog">{{ author.socials.Blog }}</NuxtLink>
           </a>
         </div>
       </header>
