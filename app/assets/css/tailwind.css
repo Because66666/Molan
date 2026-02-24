@@ -49,3 +49,25 @@
   font-style: normal;
   font-display: swap;
 }
+
+/* Prevent buttons and button-like links from darkening text on hover */
+@layer components {
+  button:hover,
+  button:focus,
+  a[role="button"]:hover,
+  a[role="button"]:focus,
+  .btn:hover,
+  .btn:focus,
+  .btn-brick:hover,
+  .btn-brick:focus {
+    color: inherit !important;
+  }
+
+  /* Ensure nested text inside buttons doesn't change color on hover */
+  button:hover *,
+  a[role="button"]:hover *,
+  .btn:hover *,
+  .btn-brick:hover * {
+    color: inherit !important;
+  }
+}
