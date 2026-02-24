@@ -1,18 +1,46 @@
 <template>
   <div>
-    <section class="relative h-64 md:h-96 overflow-hidden">
+    <section class="relative h-64 md:h-96 overflow-visible">
       <div class="absolute inset-0 bg-gradient-to-r from-brick/20 to-paper" />
       <div class="absolute inset-0 flex items-center justify-center">
-        <div class="text-center px-4">
-          <h1 class="font-xuansong text-4xl md:text-6xl text-brick mb-4">
-            方圆
-          </h1>
-          <p class="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto">
-            观方寸之间，知天地之圆
-          </p>
+        <div class="w-full h-full relative overflow-hidden">
+          <div v-if="slides?.length" class="w-full h-full">
+            <div v-for="(slide, i) in slides" :key="slide.name" class="absolute inset-0 transition-opacity duration-700"
+              :class="i === current ? 'opacity-100 z-10' : 'opacity-0 z-0'">
+              <template v-if="slide.link && slide.link.startsWith('/')">
+                <NuxtLink :to="slide.link" class="block w-full h-full">
+                  <img :src="slide.url" alt="" class="w-full h-full object-cover" />
+                </NuxtLink>
+              </template>
+              <template v-else-if="slide.link">
+                <a :href="slide.link" target="_blank" rel="noopener" class="block w-full h-full">
+                  <img :src="slide.url" alt="" class="w-full h-full object-cover" />
+                </a>
+              </template>
+              <template v-else>
+                <img :src="slide.url" alt="" class="w-full h-full object-cover" />
+              </template>
+            </div>
+
+            <button @click="prev"
+              class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/60 hover:bg-white/80 rounded-full p-2">‹</button>
+            <button @click="next"
+              class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/60 hover:bg-white/80 rounded-full p-2">›</button>
+
+            <!-- indicators removed from here; persistent bar added below the hero section -->
+          </div>
         </div>
       </div>
-      <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brick/50 to-transparent" />
+      <div
+        class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brick/50 to-transparent" />
+
+      <!-- persistent indicator bar -->
+      <div v-if="slides?.length"
+        class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 bg-white/80 dark:bg-gray-800/60 rounded-full px-3 py-1 flex gap-2 z-50 shadow-none">
+        <button v-for="(s, idx) in slides" :key="idx" @click="current = idx"
+          :class="['w-6 h-1 rounded-full transition-all duration-200', current === idx ? 'bg-brick' : 'bg-white/60']"
+          :aria-label="`Slide ${idx + 1}`" />
+      </div>
     </section>
 
     <section class="max-w-7xl mx-auto px-4 py-12">
@@ -20,12 +48,8 @@
         <div class="lg:col-span-2">
           <h2 class="section-title">新闻动态</h2>
           <div class="space-y-4">
-            <article 
-              v-for="news in newsList" 
-              :key="news.id" 
-              class="card group cursor-pointer"
-              @click="navigateTo(`/news/${news.stem}`)"
-            >
+            <article v-for="news in newsList" :key="news.id" class="card group cursor-pointer"
+              @click="navigateTo(`/${news.stem}`)">
               <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
                 <h3 class="font-xuansong text-lg text-gray-800 group-hover:text-brick transition-colors">
                   {{ news.title }}
@@ -49,24 +73,20 @@
           <h2 class="section-title">最新期刊</h2>
           <div v-if="latestIssue" class="card">
             <div class="flex items-center gap-2 mb-4">
-              <span class="text-brick font-xuansong text-xl">第 {{ latestIssue.vol_number }} 期</span>
+              <span class="text-brick font-xuansong text-xl">{{ latestIssue.title }} 总第 {{ latestIssue.vol_number }}
+                期</span>
             </div>
             <h3 class="font-xuansong text-lg text-gray-700 mb-4">本期目录</h3>
             <ul v-if="latestIssue.toc?.length" class="space-y-3">
-              <li 
-                v-for="(item, index) in latestIssue.toc.slice(0, 5)" 
-                :key="index"
-                class="text-gray-600 text-sm border-l-2 border-brick/30 pl-3"
-              >
+              <li v-for="(item, index) in latestIssue.toc.slice(0, 5)" :key="index"
+                class="text-gray-600 text-sm border-l-2 border-brick/30 pl-3">
                 <span class="font-medium">{{ item.title }}</span>
                 <span v-if="item.author" class="text-gray-400 ml-2">/ {{ item.author }}</span>
               </li>
             </ul>
             <p v-else class="text-gray-400 text-sm">暂无目录</p>
-            <NuxtLink 
-              :to="`/issues/${latestIssue.stem?.replace('issues/', '')}`" 
-              class="btn-brick inline-block mt-6 text-sm"
-            >
+            <NuxtLink :to="`/issues/${latestIssue.stem?.replace('issues/', '')}`"
+              class="btn-brick inline-block mt-6 text-sm">
               阅读本期
             </NuxtLink>
           </div>
@@ -80,6 +100,8 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
+
 const { data: newsList } = await useAsyncData('news-home', () =>
   queryCollection('news')
     .order('date', 'DESC')
@@ -93,6 +115,38 @@ const { data: latestIssue } = await useAsyncData('latest-issue', () =>
     .limit(1)
     .first()
 )
+
+// fetch carousel slides from server API (reads public/pictures and optional carousel.json)
+const { data: slides } = await useAsyncData('carousel', () => $fetch('/api/carousel'))
+
+const current = ref(0)
+let timer: ReturnType<typeof setInterval> | null = null
+
+const next = () => {
+  if (!slides.value?.length) return
+  current.value = (current.value + 1) % slides.value.length
+}
+const prev = () => {
+  if (!slides.value?.length) return
+  current.value = (current.value - 1 + slides.value.length) % slides.value.length
+}
+
+onMounted(() => {
+  if (slides.value?.length) {
+    timer = setInterval(next, 4000)
+  }
+})
+
+watch(slides, (v) => {
+  if (timer) clearInterval(timer)
+  if (v?.length) {
+    timer = setInterval(next, 4000)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (timer) clearInterval(timer)
+})
 
 const formatDate = (date: string) => {
   if (!date) return ''

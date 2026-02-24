@@ -1,21 +1,12 @@
 <template>
   <div class="max-w-7xl mx-auto px-4 py-12">
     <h1 class="font-xuansong text-3xl text-brick mb-8">作者</h1>
-    
+
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <article 
-        v-for="author in authors" 
-        :key="author.id" 
-        class="card group cursor-pointer text-center"
-        @click="navigateTo(`/authors/${author.stem?.replace('authors/', '')}`)"
-      >
+      <article v-for="author in authors" :key="author.id" class="card group cursor-pointer text-center"
+        @click="navigateTo(`/authors/${author.stem?.replace('authors/', '')}`)">
         <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-paper-dark flex items-center justify-center overflow-hidden">
-          <img 
-            v-if="author.avatar" 
-            :src="author.avatar" 
-            :alt="author.name"
-            class="w-full h-full object-cover"
-          >
+          <img v-if="author.avatar" :src="author.avatar" :alt="author.name" class="w-full h-full object-cover">
           <span v-else class="font-xuansong text-3xl text-brick/50">
             {{ author.name?.charAt(0) }}
           </span>
@@ -25,6 +16,9 @@
         </h2>
         <p v-if="author.bio" class="text-gray-500 text-sm line-clamp-2">
           {{ author.bio }}
+        </p>
+        <p v-if="author.position" class="text-gray-500 text-sm line-clamp-2">
+          {{ author.position }}
         </p>
       </article>
     </div>

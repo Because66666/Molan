@@ -3,46 +3,23 @@
     <article v-if="author" class="bg-white rounded-sm shadow-sm p-8">
       <header class="text-center mb-8 pb-8 border-b border-gray-200">
         <div class="w-32 h-32 mx-auto mb-4 rounded-full bg-paper-dark flex items-center justify-center overflow-hidden">
-          <img 
-            v-if="author.avatar" 
-            :src="author.avatar" 
-            :alt="author.name"
-            class="w-full h-full object-cover"
-          >
+          <img v-if="author.avatar" :src="author.avatar" :alt="author.name" class="w-full h-full object-cover">
           <span v-else class="font-xuansong text-4xl text-brick/50">
             {{ author.name?.charAt(0) }}
           </span>
         </div>
         <h1 class="font-xuansong text-3xl text-gray-800 mb-2">{{ author.name }}</h1>
         <p v-if="author.bio" class="text-gray-500">{{ author.bio }}</p>
+        <p v-if="author.position" class="text-gray-500">{{ author.position }}</p>
         <div v-if="author.socials" class="flex justify-center gap-4 mt-4">
-          <a 
-            v-if="author.socials.email" 
-            :href="`mailto:${author.socials.email}`"
-            class="text-gray-400 hover:text-brick transition-colors"
-          >
-            邮箱
-          </a>
-          <a 
-            v-if="author.socials.weibo" 
-            :href="author.socials.weibo"
-            target="_blank"
-            rel="noopener"
-            class="text-gray-400 hover:text-brick transition-colors"
-          >
-            微博
-          </a>
-          <a 
-            v-if="author.socials.github" 
-            :href="author.socials.github"
-            target="_blank"
-            rel="noopener"
-            class="text-gray-400 hover:text-brick transition-colors"
-          >
-            GitHub
+          <a v-if="author.socials.QQ" class="text-gray-400 hover:text-brick transition-colors">
+            QQ：{{ author.socials.QQ }}
           </a>
         </div>
       </header>
+      <!-- 调试：显示 author 对象的 JSON，方便定位字段 -->
+      <pre class="mt-4 p-4 bg-gray-50 text-sm overflow-auto">{{ JSON.stringify(author, null, 2) }}</pre>
+
       <ContentRenderer :value="author" class="prose prose-stone max-w-none" />
     </article>
   </div>
