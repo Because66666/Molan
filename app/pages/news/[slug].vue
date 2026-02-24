@@ -14,8 +14,8 @@
 </template>
 
 <script setup lang="ts">
-const route = useRoute()
-const slug = Array.isArray(route.params.slug) ? route.params.slug[0] ?? '' : (route.params.slug ?? '')
+import { useSlug } from '../../../composables/useSlug'
+const { slug } = useSlug()
 
 const { data: news } = await useAsyncData(`news-${slug}`, () =>
   queryCollection('news')
@@ -27,11 +27,8 @@ if (!news.value) {
   throw createError({ statusCode: 404, statusMessage: '新闻不存在' })
 }
 
-const formatDate = (date: string) => {
-  if (!date) return ''
-  const d = new Date(date)
-  return d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
-}
+import { formatDateYMD } from '../../../composables/useFormatDate'
+const formatDate = formatDateYMD
 
 useHead({
   title: `${news.value?.title} - 抹岚报社`

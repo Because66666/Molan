@@ -30,6 +30,9 @@
         <button 
           @click="mobileMenuOpen = !mobileMenuOpen"
           class="md:hidden p-2 text-gray-700 hover:text-brick"
+          :aria-expanded="mobileMenuOpen"
+          aria-controls="mobile-menu"
+          aria-label="切换导航菜单"
         >
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path v-if="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -39,21 +42,26 @@
       </nav>
 
       <Teleport to="body">
-        <Transition name="slide">
+          <Transition name="slide">
           <div
             v-if="mobileMenuOpen"
             @click.self="mobileMenuOpen = false"
             class="fixed inset-0 z-[9999] md:hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="mobile-menu-title"
           >
             <div class="absolute inset-0 bg-black/20" @click="mobileMenuOpen = false" aria-hidden="true"></div>
 
-            <ul class="relative bg-paper max-w-7xl mx-auto mt-16 p-4 border-t border-gray-200 space-y-3">
+            <ul id="mobile-menu" class="relative bg-paper max-w-7xl mx-auto mt-16 p-4 border-t border-gray-200 space-y-3" role="menu" aria-label="主导航">
+              <li class="sr-only" id="mobile-menu-title">主导航</li>
               <li v-for="item in navItems" :key="item.path">
                 <NuxtLink 
                   :to="item.path"
                   @click="mobileMenuOpen = false"
                   class="block py-2 text-gray-700 hover:text-brick transition-colors"
                   :class="{ 'text-brick font-medium': isActive(item.path) }"
+                  role="menuitem"
                 >
                   {{ item.label }}
                 </NuxtLink>

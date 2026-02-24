@@ -6,7 +6,7 @@
       <article v-for="author in authors" :key="author.id" class="card group cursor-pointer text-center"
         @click="navigateTo(`/authors/${author.stem?.replace('authors/', '')}`)">
         <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-paper-dark flex items-center justify-center overflow-hidden">
-          <img v-if="author.avatar" :src="author.avatar" :alt="author.name" class="w-full h-full object-cover">
+          <img v-if="author.avatar" :src="author.avatar" :alt="author.name" loading="lazy" class="w-full h-full object-cover">
           <span v-else class="font-xuansong text-3xl text-brick/50">
             {{ author.name?.charAt(0) }}
           </span>

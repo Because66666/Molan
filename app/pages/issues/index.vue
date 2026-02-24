@@ -65,11 +65,8 @@ const pagedIssues = computed(() => {
   return all.slice(start, start + pageSize)
 })
 
-const formatDate = (date: string) => {
-  if (!date) return ''
-  const d = new Date(date)
-  return d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long' })
-}
+import { formatDateYM } from '../../../composables/useFormatDate'
+const formatDate = formatDateYM
 
 useHead({
   title: '电子期刊 - 抹岚报社'

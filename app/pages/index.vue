@@ -14,16 +14,16 @@
               :class="i === current ? 'opacity-100 z-10' : 'opacity-0 z-0'">
               <template v-if="slide.link && slide.link.startsWith('/')">
                 <NuxtLink :to="slide.link" class="block w-full h-full">
-                  <img :src="slide.url" alt="" class="w-full h-full object-cover" />
+                  <img :src="slide.url" alt="" loading="lazy" class="w-full h-full object-cover" />
                 </NuxtLink>
               </template>
               <template v-else-if="slide.link">
                 <a :href="slide.link" target="_blank" rel="noopener noreferrer" class="block w-full h-full">
-                  <img :src="slide.url" alt="" class="w-full h-full object-cover" />
+                  <img :src="slide.url" alt="" loading="lazy" class="w-full h-full object-cover" />
                 </a>
               </template>
               <template v-else>
-                <img :src="slide.url" alt="" class="w-full h-full object-cover" />
+                <img :src="slide.url" alt="" loading="lazy" class="w-full h-full object-cover" />
               </template>
             </div>
 
@@ -217,11 +217,8 @@ onBeforeUnmount(() => {
   if (timer) clearInterval(timer)
 })
 
-const formatDate = (date: string) => {
-  if (!date) return ''
-  const d = new Date(date)
-  return d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
-}
+import { formatDateYMD } from '../../composables/useFormatDate'
+const formatDate = formatDateYMD
 
 useHead({
   title: '抹岚报社 - 方圆'

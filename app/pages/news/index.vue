@@ -54,11 +54,8 @@ const pagedNews = computed(() => {
   return all.slice(start, start + pageSize)
 })
 
-const formatDate = (date: string) => {
-  if (!date) return ''
-  const d = new Date(date)
-  return d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
-}
+import { formatDateYMD } from '../../../composables/useFormatDate'
+const formatDate = formatDateYMD
 
 useHead({
   title: '报社新闻 - 抹岚报社'

@@ -3,7 +3,7 @@
     <article v-if="author" class="bg-white rounded-sm shadow-sm p-8">
       <header class="text-center mb-8 pb-8 border-b border-gray-200">
         <div class="w-32 h-32 mx-auto mb-4 rounded-full bg-paper-dark flex items-center justify-center overflow-hidden">
-          <img v-if="authorAvatar" :src="authorAvatar" :alt="author.name" class="w-full h-full object-cover">
+          <img v-if="authorAvatar" :src="authorAvatar" :alt="author.name" loading="lazy" class="w-full h-full object-cover">
           <span v-else class="font-xuansong text-4xl text-brick/50">
             {{ author.name?.charAt(0) }}
           </span>
@@ -33,18 +33,10 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useSlug } from '../../../composables/useSlug'
+import { isSafeUrl, isExternalUrl } from '../../../composables/useSafeUrl'
 
-// Only allow safe URL protocols or internal paths. Reject javascript: and other unsafe schemes.
-const isSafeUrl = (u: unknown) => {
-  if (typeof u !== 'string' || u.trim() === '') return false
-  // internal path
-  if (u.startsWith('/')) return true
-  // only allow http(s)
-  return /^https?:\/\//i.test(u)
-}
-
-const route = useRoute()
-const slug = Array.isArray(route.params.slug) ? route.params.slug[0] ?? '' : (route.params.slug ?? '')
+const { slug } = useSlug()
 
 const { data: author } = await useAsyncData(`author-${slug}`, () =>
   queryCollection('authors')
@@ -59,7 +51,7 @@ if (!author.value) {
 // Normalize blog value and avatar; validate before use to avoid XSS via URLs.
 const rawBlog = computed(() => (author.value as any)?.socials?.Blog)
 const authorBlog = computed(() => (typeof rawBlog.value === 'string' && isSafeUrl(rawBlog.value)) ? rawBlog.value : '')
-const isExternalBlog = computed(() => authorBlog.value !== '' && /^https?:\/\//i.test(authorBlog.value))
+const isExternalBlog = computed(() => isExternalUrl(authorBlog.value))
 
 const rawAvatar = computed(() => (author.value as any)?.avatar)
 const authorAvatar = computed(() => isSafeUrl(rawAvatar.value) ? rawAvatar.value : '/pictures/default-avatar.png')

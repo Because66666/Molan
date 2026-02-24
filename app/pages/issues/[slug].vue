@@ -46,16 +46,18 @@
       <section v-if="issue.pdf_url">
         <h2 class="font-xuansong text-xl text-gray-800 mb-4">PDF 阅读</h2>
         <div class="bg-white rounded-sm border border-gray-200 p-4">
-          <client-only>
-            <div class="pdf-frame h-[800px] overflow-auto rounded-sm">
-              <VuePdfEmbed
-                v-if="issue.pdf_url"
-                :source="issue.pdf_url"
-                class="w-full"
-              />
-            </div>
-          </client-only>
-        </div>
+            <client-only>
+              <div v-if="isPdfSafe" class="pdf-frame h-[800px] overflow-auto rounded-sm">
+                <VuePdfEmbed
+                  :source="issue.pdf_url"
+                  class="w-full"
+                />
+              </div>
+              <div v-else class="text-sm text-gray-500">
+                无法安全嵌入此 PDF，您可以通过“新窗口打开 PDF”链接查看。
+              </div>
+            </client-only>
+          </div>
         <a
           :href="issue.pdf_url"
           target="_blank"
@@ -76,9 +78,11 @@
 <script setup lang="ts">
 import VuePdfEmbed from 'vue-pdf-embed'
 import { computed } from 'vue'
+import { useSlug } from '../../../composables/useSlug'
+import { formatDateYMD } from '../../../composables/useFormatDate'
+import { isSafeUrl, isExternalUrl } from '../../../composables/useSafeUrl'
 
-const route = useRoute()
-const slug = Array.isArray(route.params.slug) ? route.params.slug[0] ?? '' : (route.params.slug ?? '')
+const { slug } = useSlug()
 
 const { data: issue } = await useAsyncData(`issue-${slug}`, () =>
   queryCollection('issues')
@@ -90,11 +94,7 @@ if (!issue.value) {
   throw createError({ statusCode: 404, statusMessage: '期刊不存在' })
 }
 
-const formatDate = (date: string) => {
-  if (!date) return ''
-  const d = new Date(date)
-  return d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
-}
+const formatDate = formatDateYMD
 
 // Replace 'cover' with the correct property name if it exists, e.g., 'covers' or 'cover_images'.
 // For demonstration, let's assume the correct property is 'covers'.
@@ -118,6 +118,16 @@ const covers = computed(() => {
 
 useHead({
   title: `第 ${issue.value?.vol_number} 期 - 抹岚报社`
+})
+
+// Validate pdf_url before embedding
+const isPdfSafe = computed(() => isSafeUrl((issue.value as any)?.pdf_url))
+
+// Add conservative CSP for this page to restrict frames (meta tag)
+useHead({
+  meta: [
+    ({ 'http-equiv': 'Content-Security-Policy', content: "default-src 'self'; frame-src 'self' https:; object-src 'none'" } as any)
+  ]
 })
 </script>
 
