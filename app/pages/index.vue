@@ -3,7 +3,12 @@
     <section class="relative h-64 md:h-96 overflow-visible">
       <div class="absolute inset-0 bg-gradient-to-r from-brick/20 to-paper" />
       <div class="absolute inset-0 flex items-center justify-center">
-        <div class="w-full h-full relative overflow-hidden">
+          <div class="w-full h-full relative overflow-hidden"
+            @touchstart.passive="onTouchStart"
+            @touchmove.passive="onTouchMove"
+            @touchend="onTouchEnd"
+            @pointerdown.passive="onPointerDown"
+            @pointerup="onPointerUp">
           <div v-if="slides?.length" class="w-full h-full">
             <div v-for="(slide, i) in slides" :key="slide.name" class="absolute inset-0 transition-opacity duration-700"
               :class="i === current ? 'opacity-100 z-10' : 'opacity-0 z-0'">
@@ -122,6 +127,74 @@ const { data: slides } = await useAsyncData('carousel', () => $fetch('/api/carou
 const current = ref(0)
 let timer: ReturnType<typeof setInterval> | null = null
 
+const touchStartX = ref<number | null>(null)
+const touchCurrentX = ref<number | null>(null)
+const swipeThreshold = 50 // px
+
+const startTimer = () => {
+  if (timer) clearInterval(timer)
+  if (slides.value?.length) {
+    timer = setInterval(next, 4000)
+  }
+}
+
+const stopTimer = () => {
+  if (timer) {
+    clearInterval(timer)
+    timer = null
+  }
+}
+
+const onTouchStart = (e: TouchEvent) => {
+  stopTimer()
+  touchStartX.value = e.touches[0]?.clientX ?? null
+  touchCurrentX.value = touchStartX.value
+}
+
+const onTouchMove = (e: TouchEvent) => {
+  touchCurrentX.value = e.touches[0]?.clientX ?? touchCurrentX.value
+}
+
+const onTouchEnd = () => {
+  if (touchStartX.value == null || touchCurrentX.value == null) {
+    startTimer()
+    return
+  }
+  const delta = (touchCurrentX.value || 0) - (touchStartX.value || 0)
+  if (Math.abs(delta) > swipeThreshold) {
+    if (delta < 0) next()
+    else prev()
+  }
+  touchStartX.value = null
+  touchCurrentX.value = null
+  startTimer()
+}
+
+// pointer fallback for some devices (desktop touchpads / stylus)
+const onPointerDown = (e: PointerEvent) => {
+  // only handle touch pointers here
+  if (e.pointerType !== 'touch') return
+  stopTimer()
+  touchStartX.value = e.clientX
+  touchCurrentX.value = touchStartX.value
+}
+
+const onPointerUp = (e: PointerEvent) => {
+  if (touchStartX.value == null) {
+    startTimer()
+    return
+  }
+  touchCurrentX.value = e.clientX
+  const delta = (touchCurrentX.value || 0) - (touchStartX.value || 0)
+  if (Math.abs(delta) > swipeThreshold) {
+    if (delta < 0) next()
+    else prev()
+  }
+  touchStartX.value = null
+  touchCurrentX.value = null
+  startTimer()
+}
+
 const next = () => {
   if (!slides.value?.length) return
   current.value = (current.value + 1) % slides.value.length
@@ -132,16 +205,12 @@ const prev = () => {
 }
 
 onMounted(() => {
-  if (slides.value?.length) {
-    timer = setInterval(next, 4000)
-  }
+  startTimer()
 })
 
 watch(slides, (v) => {
-  if (timer) clearInterval(timer)
-  if (v?.length) {
-    timer = setInterval(next, 4000)
-  }
+  // restart timer when slides change
+  startTimer()
 })
 
 onBeforeUnmount(() => {

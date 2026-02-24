@@ -12,7 +12,7 @@
           版面佚失
         </h1>
         <p class="text-gray-500 mb-8 max-w-md mx-auto">
-          {{ error?.statusMessage || '您寻找的页面似乎已遗失在时光中' }}
+          {{ error?.statusMessage || '您寻找的页面似乎已丢失' }}
         </p>
         <button 
           @click="handleError"

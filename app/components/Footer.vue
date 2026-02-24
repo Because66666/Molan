@@ -9,7 +9,7 @@
           </div>
           <div>
             <p class="font-xuansong text-brick">抹岚报社</p>
-            <p class="text-xs text-gray-500">出版物《方圆》</p>
+            <p class="text-xs text-gray-500">RIA、审判之锤社群社团</p>
           </div>
         </div>
 
