@@ -30,10 +30,13 @@
         <h2 class="font-xuansong text-xl text-gray-800 mb-4">PDF 阅读</h2>
         <div class="bg-white rounded-sm border border-gray-200 p-4">
           <client-only>
-            <vue-pdf-embed
-              v-if="issue.pdf_url"
-              :url="issue.pdf_url">
-            </vue-pdf-embed>
+            <div class="pdf-frame h-[800px] overflow-auto rounded-sm">
+              <VuePdfEmbed
+                v-if="issue.pdf_url"
+                :source="issue.pdf_url"
+                class="w-full"
+              />
+            </div>
           </client-only>
         </div>
         <a 
@@ -80,17 +83,22 @@ useHead({
 </script>
 
 <style>
-.pdf-container {
+.pdf-frame {
   position: relative;
   width: 100%;
   height: 800px;
   border-radius: 0.5rem;
-  overflow: hidden;
 }
 
-.pdf-container iframe {
-  border: none;
+.pdf-frame > * {
+  max-width: 100%;
+}
+
+.pdf-frame iframe,
+.pdf-frame embed,
+.pdf-frame canvas {
+  display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
 }
 </style>
