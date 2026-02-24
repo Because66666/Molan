@@ -4,7 +4,7 @@
     
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <article 
-        v-for="issue in issues" 
+        v-for="issue in pagedIssues" 
         :key="issue.id" 
         class="card group"
       >
@@ -38,15 +38,32 @@
     <div v-if="!issues?.length" class="text-center py-16 text-gray-400">
       暂无期刊
     </div>
+
+    <div v-else class="mt-6 flex items-center justify-center gap-2">
+      <button class="btn" :disabled="page === 1" @click="page--">上一页</button>
+      <span class="text-sm text-gray-600">第 {{ page }} / {{ totalPages }} 页</span>
+      <button class="btn" :disabled="page >= totalPages" @click="page++">下一页</button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, computed } from 'vue'
+
 const { data: issues } = await useAsyncData('issues', () =>
   queryCollection('issues')
     .order('vol_number', 'DESC')
     .all()
 )
+
+const page = ref(1)
+const pageSize = 9
+const totalPages = computed(() => Math.max(1, Math.ceil((issues.value?.length ?? 0) / pageSize)))
+const pagedIssues = computed(() => {
+  const all = issues.value ?? []
+  const start = (page.value - 1) * pageSize
+  return all.slice(start, start + pageSize)
+})
 
 const formatDate = (date: string) => {
   if (!date) return ''

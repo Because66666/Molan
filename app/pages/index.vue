@@ -18,7 +18,7 @@
                 </NuxtLink>
               </template>
               <template v-else-if="slide.link">
-                <a :href="slide.link" target="_blank" rel="noopener" class="block w-full h-full">
+                <a :href="slide.link" target="_blank" rel="noopener noreferrer" class="block w-full h-full">
                   <img :src="slide.url" alt="" class="w-full h-full object-cover" />
                 </a>
               </template>

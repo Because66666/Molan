@@ -3,7 +3,7 @@
     <article v-if="author" class="bg-white rounded-sm shadow-sm p-8">
       <header class="text-center mb-8 pb-8 border-b border-gray-200">
         <div class="w-32 h-32 mx-auto mb-4 rounded-full bg-paper-dark flex items-center justify-center overflow-hidden">
-          <img v-if="author.avatar" :src="author.avatar" :alt="author.name" class="w-full h-full object-cover">
+          <img v-if="authorAvatar" :src="authorAvatar" :alt="author.name" class="w-full h-full object-cover">
           <span v-else class="font-xuansong text-4xl text-brick/50">
             {{ author.name?.charAt(0) }}
           </span>
@@ -15,9 +15,15 @@
           <a v-if="author.socials.QQ" class="text-gray-400 hover:text-brick transition-colors">
             QQ：{{ author.socials.QQ }}
           </a>
-          <a v-if="author.socials.Blog" class="text-gray-400 hover:text-brick transition-colors">
-            个人博客：<NuxtLink :to="author.socials.Blog">{{ author.socials.Blog }}</NuxtLink>
-          </a>
+          <div v-if="authorBlog" class="text-gray-400 hover:text-brick transition-colors">
+            个人博客：
+            <template v-if="isExternalBlog">
+              <a :href="authorBlog" target="_blank" rel="noopener noreferrer">{{ authorBlog }}</a>
+            </template>
+            <template v-else>
+              <NuxtLink :to="authorBlog">{{ authorBlog }}</NuxtLink>
+            </template>
+          </div>
         </div>
       </header>
       <ContentRenderer :value="author" class="prose prose-stone max-w-none" />
@@ -26,17 +32,37 @@
 </template>
 
 <script setup lang="ts">
-const route = useRoute()
+import { computed } from 'vue'
 
-const { data: author } = await useAsyncData(`author-${route.params.slug}`, () =>
+// Only allow safe URL protocols or internal paths. Reject javascript: and other unsafe schemes.
+const isSafeUrl = (u: unknown) => {
+  if (typeof u !== 'string' || u.trim() === '') return false
+  // internal path
+  if (u.startsWith('/')) return true
+  // only allow http(s)
+  return /^https?:\/\//i.test(u)
+}
+
+const route = useRoute()
+const slug = Array.isArray(route.params.slug) ? route.params.slug[0] ?? '' : (route.params.slug ?? '')
+
+const { data: author } = await useAsyncData(`author-${slug}`, () =>
   queryCollection('authors')
-    .where('stem', '=', `authors/${route.params.slug}` as string)
+    .where('stem', '=', `authors/${slug}`)
     .first()
 )
 
 if (!author.value) {
   throw createError({ statusCode: 404, statusMessage: '作者不存在' })
 }
+
+// Normalize blog value and avatar; validate before use to avoid XSS via URLs.
+const rawBlog = computed(() => (author.value as any)?.socials?.Blog)
+const authorBlog = computed(() => (typeof rawBlog.value === 'string' && isSafeUrl(rawBlog.value)) ? rawBlog.value : '')
+const isExternalBlog = computed(() => authorBlog.value !== '' && /^https?:\/\//i.test(authorBlog.value))
+
+const rawAvatar = computed(() => (author.value as any)?.avatar)
+const authorAvatar = computed(() => isSafeUrl(rawAvatar.value) ? rawAvatar.value : '/pictures/default-avatar.png')
 
 useHead({
   title: `${author.value?.name} - 抹岚报社`

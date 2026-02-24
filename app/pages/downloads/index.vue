@@ -24,10 +24,10 @@
             <p v-if="download.size" class="text-gray-400 text-xs mb-3">
               {{ download.size }}
             </p>
-            <a 
-              :href="download.github_url" 
+            <a
+              :href="download.github_url"
               target="_blank"
-              rel="noopener"
+              rel="noopener noreferrer"
               class="btn-brick text-sm inline-block"
             >
               下载

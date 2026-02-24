@@ -15,10 +15,11 @@
 
 <script setup lang="ts">
 const route = useRoute()
+const slug = Array.isArray(route.params.slug) ? route.params.slug[0] ?? '' : (route.params.slug ?? '')
 
-const { data: news } = await useAsyncData(`news-${route.params.slug}`, () =>
+const { data: news } = await useAsyncData(`news-${slug}`, () =>
   queryCollection('news')
-    .where('stem', '=', `news/${route.params.slug}` as string)
+    .where('stem', '=', `news/${slug}`)
     .first()
 )
 

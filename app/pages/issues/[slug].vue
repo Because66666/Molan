@@ -56,10 +56,10 @@
             </div>
           </client-only>
         </div>
-        <a 
-          :href="issue.pdf_url" 
-          target="_blank" 
-          rel="noopener"
+        <a
+          :href="issue.pdf_url"
+          target="_blank"
+          rel="noopener noreferrer"
           class="btn-brick inline-block mt-4 text-sm"
         >
           新窗口打开 PDF
@@ -78,10 +78,11 @@ import VuePdfEmbed from 'vue-pdf-embed'
 import { computed } from 'vue'
 
 const route = useRoute()
+const slug = Array.isArray(route.params.slug) ? route.params.slug[0] ?? '' : (route.params.slug ?? '')
 
-const { data: issue } = await useAsyncData(`issue-${route.params.slug}`, () =>
+const { data: issue } = await useAsyncData(`issue-${slug}`, () =>
   queryCollection('issues')
-    .where('stem', '=', `issues/${route.params.slug}` as string)
+    .where('stem', '=', `issues/${slug}`)
     .first()
 )
 
@@ -98,7 +99,7 @@ const formatDate = (date: string) => {
 // Replace 'cover' with the correct property name if it exists, e.g., 'covers' or 'cover_images'.
 // For demonstration, let's assume the correct property is 'covers'.
 const covers = computed(() => {
-  const c = issue.value?.covers // <-- update this line to match your actual data property
+  const c: any = (issue.value as any)?.covers // <-- use any to avoid TS errors when schema lacks `covers`
   if (!c) return []
   if (Array.isArray(c)) {
     const allObjects = c.every((it: any) => typeof it === 'object' && it !== null && !Array.isArray(it))

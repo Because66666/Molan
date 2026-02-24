@@ -4,10 +4,10 @@
     
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <article 
-        v-for="news in newsList" 
+        v-for="news in pagedNews" 
         :key="news.id" 
         class="card group cursor-pointer"
-        @click="navigateTo(`/news/${news.stem?.replace('news/', '')}`)"
+        @click="navigateTo(`/news/${news.stem?.replace('news/', '')}`)">
       >
         <div class="mb-4">
           <h2 class="font-xuansong text-xl text-gray-800 group-hover:text-brick transition-colors mb-2">
@@ -27,15 +27,32 @@
     <div v-if="!newsList?.length" class="text-center py-16 text-gray-400">
       暂无新闻
     </div>
+
+    <div v-else class="mt-6 flex items-center justify-center gap-2">
+      <button class="btn" :disabled="page === 1" @click="page--">上一页</button>
+      <span class="text-sm text-gray-600">第 {{ page }} / {{ totalPages }} 页</span>
+      <button class="btn" :disabled="page >= totalPages" @click="page++">下一页</button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, computed } from 'vue'
+
 const { data: newsList } = await useAsyncData('news', () =>
   queryCollection('news')
     .order('date', 'DESC')
     .all()
 )
+
+const page = ref(1)
+const pageSize = 10
+const totalPages = computed(() => Math.max(1, Math.ceil((newsList.value?.length ?? 0) / pageSize)))
+const pagedNews = computed(() => {
+  const all = newsList.value ?? []
+  const start = (page.value - 1) * pageSize
+  return all.slice(start, start + pageSize)
+})
 
 const formatDate = (date: string) => {
   if (!date) return ''
