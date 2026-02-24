@@ -4,10 +4,10 @@
       <nav class="flex items-center justify-between">
         <NuxtLink to="/" class="flex items-center gap-2 group">
           <div class="w-10 h-10 border-2 border-brick rounded-sm flex items-center justify-center">
-            <span class="font-xuansong text-brick text-lg font-bold">方</span>
+            <span class="font-xuansong text-brick text-lg font-bold">抹</span>
           </div>
           <span class="font-xuansong text-2xl text-brick group-hover:text-brick/80 transition-colors">
-            抹岚报社
+            抹岚报社 方圆（网站测试中）
           </span>
         </NuxtLink>
         

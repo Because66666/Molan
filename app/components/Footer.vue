@@ -16,8 +16,8 @@
         <div class="text-center md:text-right text-sm text-gray-600 space-y-1">
           <p>&copy; 2021-{{ currentYear }} 抹岚报社</p>
           <p class="text-xs">
-            <a href="https://icp.gov.moe/?keyword=20246111" target="_blank" rel="noopener" class="hover:text-brick">
-              萌ICP备20246111号
+            <a href="https://icp.gov.moe/?keyword=" target="_blank" rel="noopener" class="hover:text-brick">
+              萌ICP备20260000号
             </a>
           </p>
           <p class="text-xs">
