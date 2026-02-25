@@ -1,0 +1,1 @@
+import{a7 as s,o as a,c,e,a as _,y as r,ab as l,ac as d}from"./Bkslm1MV.js";const f={},m={class:"min-h-screen flex flex-col bg-paper"},p={class:"flex-1"};function i(o,u){const t=l,n=d;return a(),c("div",m,[e(t),_("main",p,[r(o.$slots,"default")]),e(n)])}const h=s(f,[["render",i]]);export{h as default};
