@@ -1,1 +1,0 @@
-function e(n){return n?new Date(n).toLocaleDateString("zh-CN",{year:"numeric",month:"long",day:"numeric"}):""}function r(n){return n?new Date(n).toLocaleDateString("zh-CN",{year:"numeric",month:"long"}):""}export{r as a,e as f};
