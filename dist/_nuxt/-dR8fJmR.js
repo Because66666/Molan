@@ -1,1 +1,0 @@
-import{a7 as o,o as s,c as r,y as t}from"./Bkslm1MV.js";const n={};function a(e,c){return s(),r("tbody",null,[t(e.$slots,"default")])}const _=Object.assign(o(n,[["render",a]]),{__name:"ProseTbody"});export{_ as default};
