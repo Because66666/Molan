@@ -12,6 +12,9 @@ export default defineNuxtConfig({
     configPath: 'tailwind.config.ts'
   },
   nitro: {
+    output: {
+      dir: 'docs'
+    },
     prerender: {
       crawlLinks: true,
       failOnError: false

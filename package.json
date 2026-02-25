@@ -5,7 +5,8 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
-    "generate": "nuxt generate --output-dir docs",
+    "generate": "nuxt generate && npm run move-docs",
+    "move-docs": "powershell -ExecutionPolicy Bypass -File scripts/move-docs.ps1",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
