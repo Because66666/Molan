@@ -47,14 +47,47 @@
         <h2 class="font-xuansong text-xl text-gray-800 mb-4">PDF 阅读</h2>
         <div class="bg-white rounded-sm border border-gray-200 p-4">
             <client-only>
-              <div v-if="isPdfSafe" class="pdf-frame h-[800px] overflow-auto rounded-sm">
-                <VuePdfEmbed
-                  :source="issue.pdf_url"
-                  class="w-full"
-                />
+              <div v-if="isPdfSafe" class="pdf-viewer flex gap-4">
+                <div class="pdf-frame overflow-auto rounded-sm flex justify-center flex-1">
+                  <VuePdfEmbed
+                    :source="issue.pdf_url"
+                    :page="currentPage"
+                    class="w-full max-w-3xl "
+                    @loaded="onPdfLoaded"
+                    @rendered="onPdfRendered"
+                    @rendering-failed="onPdfRenderingFailed"
+                  />
+                </div>
+                <div class="pdf-controls flex flex-col items-center justify-center gap-4 w-24">
+                  <button
+                    @click="prevPage"
+                    :disabled="currentPage <= 1"
+                    class="w-20 h-20 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-sm text-sm font-medium transition-colors flex items-center justify-center"
+                  >
+                    上一页
+                  </button>
+                  <div class="flex flex-col items-center gap-2">
+                    <input
+                      v-model.number="pageInput"
+                      @keyup.enter="goToPage"
+                      type="number"
+                      min="1"
+                      :max="totalPages"
+                      class="w-16 px-2 py-1 border border-gray-300 rounded-sm text-center text-sm"
+                    />
+                    <span class="text-sm text-gray-600">/ {{ totalPages }}</span>
+                  </div>
+                  <button
+                    @click="nextPage"
+                    :disabled="currentPage >= totalPages"
+                    class="w-20 h-20 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-sm text-sm font-medium transition-colors flex items-center justify-center"
+                  >
+                    下一页
+                  </button>
+                </div>
               </div>
               <div v-else class="text-sm text-gray-500">
-                无法安全嵌入此 PDF，您可以通过“新窗口打开 PDF”链接查看。
+                无法安全嵌入此 PDF，您可以通过"新窗口打开 PDF"链接查看。
               </div>
             </client-only>
         </div>
@@ -77,7 +110,7 @@
 
 <script setup lang="ts">
 import VuePdfEmbed from 'vue-pdf-embed'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useSlug } from '../../../composables/useSlug'
 import { formatDateYMD } from '../../../composables/useFormatDate'
 import { isSafeUrl, isExternalUrl } from '../../../composables/useSafeUrl'
@@ -120,13 +153,50 @@ useHead({
 })
 
 const isPdfSafe = computed(() => isSafeUrl((issue.value as any)?.pdf_url))
+
+const currentPage = ref(1)
+const totalPages = ref(0)
+const pageInput = ref(1)
+
+const onPdfLoaded = (pdf: any) => {
+  if (pdf && pdf.numPages) {
+    totalPages.value = pdf.numPages
+  }
+}
+
+const onPdfRendered = (pdfPage: any) => {
+  console.log('PDF page rendered:', currentPage.value, pdfPage)
+}
+
+const onPdfRenderingFailed = (error: any) => {
+  console.error('PDF rendering failed for page:', currentPage.value, error)
+}
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--
+    pageInput.value = currentPage.value
+  }
+}
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++
+    pageInput.value = currentPage.value
+  }
+}
+
+const goToPage = () => {
+  const page = Math.max(1, Math.min(pageInput.value, totalPages.value))
+  currentPage.value = page
+  pageInput.value = page
+}
 </script>
 
 <style>
 .pdf-frame {
   position: relative;
   width: 100%;
-  height: 800px;
   border-radius: 0.5rem;
 }
 
